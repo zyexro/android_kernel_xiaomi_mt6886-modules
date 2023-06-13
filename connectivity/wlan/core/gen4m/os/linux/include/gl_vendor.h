@@ -132,6 +132,14 @@ enum NL80211_VENDOR_FEATURES {
 	NUM_VENDOR_FEATURES /* keep last */
 };
 
+enum NL80211_VENDOR_CHIP_CAPABILITIES {
+	MAX_MLO_ASSOCIATION_LINK_COUNT         = 1,
+	MAX_MLO_STR_LINK_COUNT                 = 2,
+	MAX_CONCURRENT_TDLS_SESSION_COUNT      = 3,
+
+	NUM_CHIP_CAPABILITIES /* keep last */
+};
+
 enum ANDROID_VENDOR_SUB_COMMAND {
 	/* Don't use 0 as a valid subcommand */
 	ANDROID_NL80211_SUBCMD_UNSPECIFIED,
@@ -214,6 +222,7 @@ enum MTK_WIFI_VENDOR_SUB_COMMAND {
 	MTK_SUBCMD_NAN = 12,
 	MTK_SUBCMD_CSI = 17,
 	MTK_SUBCMD_NDP = 81,
+	MTK_SUBCMD_GET_CHIP_CAPABILITIES = 83,
 
 	MTK_SUBCMD_STRING_CMD = 0x2454,
 };
@@ -242,6 +251,7 @@ enum WIFI_VENDOR_EVENT {
 	WIFI_EVENT_SUBCMD_NDP,
 	WIFI_EVENT_SUBCMD_CSI,
 	WIFI_EVENT_P2P_LISTEN_OFFLOAD,
+	WIFI_EVENT_SUBCMD_GET_CHIP_CAPABILITIES,
 	/* Always add at the end.*/
 };
 
@@ -1381,6 +1391,9 @@ int mtk_cfg80211_vendor_dfs_capability(struct wiphy *wiphy,
 		struct wireless_dev *wdev, const void *data, int data_len);
 
 int mtk_cfg80211_vendor_get_features(struct wiphy *wiphy,
+		struct wireless_dev *wdev, const void *data, int data_len);
+
+int mtk_cfg80211_vendor_get_chip_capabilities(struct wiphy *wiphy,
 		struct wireless_dev *wdev, const void *data, int data_len);
 
 int mtk_cfg80211_vendor_get_apf_capabilities(struct wiphy *wiphy,
