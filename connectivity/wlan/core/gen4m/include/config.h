@@ -327,7 +327,7 @@
 /* Mobile(must Android) need default 1 */
 #if defined(CONFIG_ANDROID)
 #ifndef CFG_ENABLE_WAKE_LOCK
-#define CFG_ENABLE_WAKE_LOCK	1
+#define CFG_ENABLE_WAKE_LOCK	0
 #endif
 #endif
 
