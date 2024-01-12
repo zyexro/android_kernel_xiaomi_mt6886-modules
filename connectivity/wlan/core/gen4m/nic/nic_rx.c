@@ -317,8 +317,6 @@ static const struct ACTION_FRAME_SIZE_MAP arActionFrameReservedLen[] = {
  *******************************************************************************
  */
 
-static void updateLinkStatsMpduAc(struct ADAPTER *prAdapter,
-		struct SW_RFB *prSwRfb);
 static void nicRxReturnInUseRFB(struct ADAPTER *prAdapter,
 	struct SW_RFB *prSwRfb);
 
@@ -4058,22 +4056,11 @@ uint8_t getPrimaryWlanIdx(struct ADAPTER *prAdapter,
 #endif
 }
 
-void nicRxProcessRxvLinkStats(struct ADAPTER *prAdapter,
-	struct SW_RFB *prRetSwRfb, uint32_t *pu4RxV)
-{
-#if CFG_SUPPORT_LLS
-	struct CHIP_DBG_OPS *prChipDbg;
-
-	prChipDbg = prAdapter->chip_info->prDebugOps;
-	if (prChipDbg && prChipDbg->get_rx_link_stats)
-		prChipDbg->get_rx_link_stats(prAdapter, prRetSwRfb, pu4RxV);
-
-	updateLinkStatsMpduAc(prAdapter, prRetSwRfb);
-#endif
-}
-
-void updateLinkStatsMpduAc(struct ADAPTER *prAdapter,
-		struct SW_RFB *prSwRfb)
+/**
+ * For MLO, it should read prSwRfb->ucHwBandIdx to match the RX link.
+ */
+static void updateLinkStatsMpduAc(struct ADAPTER *prAdapter,
+				struct SW_RFB *prSwRfb)
 {
 #if CFG_SUPPORT_LLS
 	static const uint8_t Tid2LinkStatsAc[] = {
@@ -4094,6 +4081,21 @@ void updateLinkStatsMpduAc(struct ADAPTER *prAdapter,
 	if (prSwRfb->ucPayloadFormat == RX_PAYLOAD_FORMAT_MSDU ||
 	    prSwRfb->ucPayloadFormat == RX_PAYLOAD_FORMAT_FIRST_SUB_AMSDU) {
 		prBssInfo = GET_BSS_INFO_BY_INDEX(prAdapter, ucBssIdx);
+#if (CFG_SUPPORT_802_11BE_MLO == 1)
+		if (prBssInfo->eHwBandIdx != prSwRfb->ucHwBandIdx) {
+			uint8_t ucHwBandIdx = prSwRfb->ucHwBandIdx;
+			uint8_t i;
+
+			/* find the BSS by matching the band index */
+			/* TODO: performance? */
+			for (i = 0; i < MAX_BSSID_NUM; i++) {
+				prBssInfo = GET_BSS_INFO_BY_INDEX(prAdapter, i);
+				if (prBssInfo &&
+				    prBssInfo->eHwBandIdx == ucHwBandIdx)
+					break;
+			}
+		}
+#endif
 		if (prBssInfo)
 			prBssInfo->u4RxMpduAc[ac]++;
 	}
@@ -4468,4 +4470,18 @@ void nicRxSetInUseCnt(struct ADAPTER *prAdapter,
 	if (fgAdjustNow)
 		nicRxAdjustInUseRFB(prAdapter);
 #endif /* CFG_DYNAMIC_RFB_ADJUSTMENT */
+}
+
+void nicRxProcessRxvLinkStats(struct ADAPTER *prAdapter,
+	struct SW_RFB *prRetSwRfb, uint32_t *pu4RxV)
+{
+#if CFG_SUPPORT_LLS
+	struct CHIP_DBG_OPS *prChipDbg;
+
+	prChipDbg = prAdapter->chip_info->prDebugOps;
+	if (prChipDbg && prChipDbg->get_rx_link_stats)
+		prChipDbg->get_rx_link_stats(prAdapter, prRetSwRfb, pu4RxV);
+
+	updateLinkStatsMpduAc(prAdapter, prRetSwRfb);
+#endif
 }

@@ -379,4 +379,7 @@ void mldDumpStarecList(struct ADAPTER *prAdapter,
 	struct MLD_STA_RECORD *prMldStarec);
 
 void mldCheckStarecList(struct ADAPTER *prAdapter);
+
+struct STA_RECORD *mldGetStaRecByBandIdx(struct ADAPTER *prAdapter,
+		struct STA_RECORD *prStaRec, uint8_t ucHwBandIdx);
 #endif /* !_MLO_H */

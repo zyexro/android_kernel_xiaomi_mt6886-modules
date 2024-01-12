@@ -3115,7 +3115,7 @@ wlanoidSetAddKey(struct ADAPTER *prAdapter, void *pvSetBuffer,
 					pvSetBuffer, u4SetBufferLen,
 					pu4SetInfoLen, TRUE);
 				if (ret != WLAN_STATUS_SUCCESS &&
-			   	    ret != WLAN_STATUS_PENDING)
+				    ret != WLAN_STATUS_PENDING)
 					return ret;
 			}
 		}
