@@ -67,7 +67,7 @@
  *                         C O M P I L E R   F L A G S
  *******************************************************************************
  */
-#define DBG_DISABLE_ALL_LOG             0
+#define DBG_DISABLE_ALL_LOG             1
 
 /*******************************************************************************
  *                    E X T E R N A L   R E F E R E N C E S
@@ -704,6 +704,8 @@ enum WAKE_DATA_TYPE {
 #if DBG_DISABLE_ALL_LOG
 #define DBGLOG(_Module, _Class, _Fmt, ...)
 #define DBGLOG_LIMITED(_Module, _Class, _Fmt, ...)
+#define DBGFWLOG(_Module, _Class, _Fmt, ...)
+#define TOOL_PRINTLOG(_Module, _Class, _Fmt, ...)
 #define DBGLOG_HEX(_Module, _Class, _StartAddr, _Length)
 #define DBGLOG_MEM8(_Module, _Class, _StartAddr, _Length)
 #define DBGLOG_MEM32(_Module, _Class, _StartAddr, _Length)
