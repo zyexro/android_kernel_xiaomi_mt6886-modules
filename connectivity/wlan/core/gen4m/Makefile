@@ -715,6 +715,12 @@ ifeq ($(CONFIG_SUPPORT_BW320), y)
     ccflags-y += -DCFG_SUPPORT_BW320=1
 endif
 
+ifeq ($(CONFIG_REKEY_OFFLOAD), n)
+    ccflags-y += -DCFG_REKEY_OFFLOAD=0
+else
+    ccflags-y += -DCFG_REKEY_OFFLOAD=1
+endif
+
 ifneq ($(CONFIG_DBDC_MODE),)
     ccflags-y += -DCFG_DBDC_MODE=$(CONFIG_DBDC_MODE)
 endif
