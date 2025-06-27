@@ -2448,6 +2448,13 @@ void p2pFuncCsaUpdateGcStaRec(struct BSS_INFO *prBssInfo)
 {
 	struct STA_RECORD *prStaRec = prBssInfo->prStaRecOfAP;
 
+	//IKSWW-13517, possible dereference on pointer causing KE
+	if (!prStaRec) {
+		DBGLOG(P2P, ERROR, "prStRec shouldn't be NULL!\n");
+		return;
+	}
+	//IKSWW-13517
+
 	/* Update VHT op info of target AP */
 	prStaRec->ucVhtOpChannelWidth =
 		prBssInfo->ucVhtChannelWidth;
