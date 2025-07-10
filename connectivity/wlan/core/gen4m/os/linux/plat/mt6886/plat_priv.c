@@ -78,6 +78,7 @@ int32_t kalCheckTputLoad(struct ADAPTER *prAdapter,
 			 int32_t i4Pending,
 			 uint32_t u4Used)
 {
+#if CFG_SUPPORT_CPU_BOOST
 	uint32_t pendingTh =
 		CFG_TX_STOP_NETIF_PER_QUEUE_THRESHOLD *
 		prAdapter->rWifiVar.u4PerfMonPendingTh / 100;
@@ -88,11 +89,15 @@ int32_t kalCheckTputLoad(struct ADAPTER *prAdapter,
 	       i4Pending >= pendingTh &&
 	       u4Used >= usedTh ?
 	       TRUE : FALSE;
+#else
+	return -1;
+#endif
 }
 
 #if KERNEL_VERSION(5, 4, 0) <= CFG80211_VERSION_CODE
 void kalSetTaskUtilMinPct(int pid, unsigned int min)
 {
+#if CFG_SUPPORT_CPU_BOOST
 	int ret = 0;
 	unsigned int blc_1024;
 	struct task_struct *p;
@@ -130,6 +135,7 @@ void kalSetTaskUtilMinPct(int pid, unsigned int min)
 		ret = sched_setattr(p, &attr);
 		put_task_struct(p);
 	}
+#endif
 }
 
 static LIST_HEAD(wlan_policy_list);
@@ -141,6 +147,7 @@ struct wlan_policy {
 
 void kalSetCpuFreq(int32_t freq, uint32_t set_mask)
 {
+#if CFG_SUPPORT_CPU_BOOST
 	int cpu, ret;
 	struct cpufreq_policy *policy;
 	struct wlan_policy *wReq;
@@ -181,6 +188,7 @@ void kalSetCpuFreq(int32_t freq, uint32_t set_mask)
 				wReq->cpu, freq, ret);
 		}
 	}
+#endif
 }
 
 void kalSetDramBoost(struct ADAPTER *prAdapter, u_int8_t onoff)
@@ -216,6 +224,7 @@ int32_t kalBoostCpu(struct ADAPTER *prAdapter,
 		    uint32_t u4TarPerfLevel,
 		    uint32_t u4BoostCpuTh)
 {
+#if CFG_SUPPORT_CPU_BOOST
 	struct GLUE_INFO *prGlueInfo = NULL;
 	static u_int8_t fgRequested = ENUM_CPU_BOOST_STATUS_INIT;
 	uint32_t u4CpuFreq = prAdapter->rWifiVar.au4CpuBoostMinFreq * 1000;
@@ -339,6 +348,9 @@ int32_t kalBoostCpu(struct ADAPTER *prAdapter,
 		"kalBoostCpu");
 
 	return 0;
+#else
+	return -1;
+#endif /* CFG_SUPPORT_CPU_BOOST */
 }
 #endif
 
@@ -406,6 +418,7 @@ void kalSetDrvEmiMpuProtection(phys_addr_t emiPhyBase, uint32_t offset,
 int32_t kalCheckVcoreBoost(struct ADAPTER *prAdapter,
 		uint8_t uBssIndex)
 {
+#if CFG_SUPPORT_CPU_BOOST
 #if (KERNEL_VERSION(5, 10, 0) <= CFG80211_VERSION_CODE) && \
 	(CFG_SUPPORT_802_11AX == 1)
 	struct BSS_INFO *prBssInfo;
@@ -453,4 +466,7 @@ int32_t kalCheckVcoreBoost(struct ADAPTER *prAdapter,
 #else
 	return FALSE;
 #endif
+#else /* CFG_SUPPORT_CPU_BOOST */
+	return FALSE;
+#endif /* CFG_SUPPORT_CPU_BOOST */
 }
