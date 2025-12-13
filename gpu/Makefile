@@ -35,21 +35,21 @@ CONFIG_MALI_PROTECTED_MEMORY_ALLOCATOR := y
 comma := ,
 PARAMS :=
 
-ifneq (,$(wildcard mt6983))
-	PARAMS += mali,mt6983,mali_valhall,mali-r38p0,mali_valhall_r38p0_mt6983
-endif
-
-ifneq (,$(wildcard mt6985))
-	PARAMS += mali,mt6985,mali_valhall,mali-r38p1,mali_valhall_r38p1_mt6985
-endif
+# ifneq (,$(wildcard mt6983))
+# 	PARAMS += mali,mt6983,mali_valhall,mali-r38p0,mali_valhall_r38p0_mt6983
+# endif
+#
+# ifneq (,$(wildcard mt6985))
+# 	PARAMS += mali,mt6985,mali_valhall,mali-r38p1,mali_valhall_r38p1_mt6985
+# endif
 
 ifneq (,$(wildcard mt6886))
 	PARAMS += mali,mt6886,mali_valhall,mali-r38p1,mali_valhall_r38p1_mt6886
 endif
 
-ifneq (,$(wildcard mt6835))
-	PARAMS += mali,mt6835,mali_valhall,mali-r38p1,mali_valhall_r38p1_mt6835
-endif
+# ifneq (,$(wildcard mt6835))
+# 	PARAMS += mali,mt6835,mali_valhall,mali-r38p1,mali_valhall_r38p1_mt6835
+# endif
 
 all modules_install clean: RULE := $(BUILD_RULE)
 all modules_install clean: MEMORY_GROUP_MANAGER := $(CONFIG_MALI_MEMORY_GROUP_MANAGER)
